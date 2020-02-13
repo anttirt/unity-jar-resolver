@@ -370,6 +370,11 @@ namespace Google {
         internal static readonly Logger logger = new Logger();
 
         /// <summary>
+        /// Encoding used for writing settings file.
+        /// </summary>
+        private static readonly System.Text.Encoding UTF8NoBOMEncoding = new System.Text.UTF8Encoding(false);
+
+        /// <summary>
         /// Delegate that checks out a file.
         /// </summary>
         internal delegate bool CheckoutFileDelegate(string filename, Logger logger);
@@ -817,9 +822,15 @@ namespace Google {
                     return;
                 }
                 try {
-                    using (var writer = new XmlTextWriter(new StreamWriter(PROJECT_SETTINGS_FILE)) {
-                            Formatting = Formatting.Indented,
-                        }) {
+                    var settings = new XmlWriterSettings {
+                        Indent = true,
+                        Encoding = UTF8NoBOMEncoding,
+                        OmitXmlDeclaration = true,
+                        NewLineChars = !string.IsNullOrEmpty(VersionHandlerImpl.SettingsLineEnding)
+                            ? VersionHandlerImpl.SettingsLineEnding
+                            : Environment.NewLine,
+                    };
+                    using (var writer = XmlWriter.Create(PROJECT_SETTINGS_FILE, settings)) {
                         writer.WriteStartElement("projectSettings");
                         foreach (var key in projectSettings.Keys) {
                             var value = projectSettings.GetString(key);

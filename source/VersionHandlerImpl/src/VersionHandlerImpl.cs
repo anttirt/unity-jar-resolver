@@ -1479,13 +1479,16 @@ public class VersionHandlerImpl : AssetPostprocessor {
         "Google.VersionHandler.VerboseLoggingEnabled";
     private const string PREFERENCE_RENAME_TO_DISABLE_FILES_ENABLED =
         "Google.VersionHandler.RenameToDisableFilesEnabled";
+    private const string PREFERENCE_SETTINGS_LINE_ENDING =
+        "Google.VersionHandler.SettingsLineEnding";
     // List of preference keys, used to restore default settings.
     private static string[] PREFERENCE_KEYS = new [] {
         PREFERENCE_ENABLED,
         PREFERENCE_CLEANUP_PROMPT_ENABLED,
         PREFERENCE_RENAME_TO_CANONICAL_FILENAMES,
         PREFERENCE_VERBOSE_LOGGING_ENABLED,
-        PREFERENCE_RENAME_TO_DISABLE_FILES_ENABLED
+        PREFERENCE_RENAME_TO_DISABLE_FILES_ENABLED,
+        PREFERENCE_SETTINGS_LINE_ENDING,
     };
 
     // Name of this plugin.
@@ -1696,6 +1699,17 @@ public class VersionHandlerImpl : AssetPostprocessor {
             return settings.GetBool(PREFERENCE_RENAME_TO_DISABLE_FILES_ENABLED, defaultValue: true);
         }
         set { settings.SetBool(PREFERENCE_RENAME_TO_DISABLE_FILES_ENABLED, value); }
+    }
+
+    /// <summary>
+    /// Line endings for settings file. Will be in encoded form in XML e.g. <code>value="&amp;#xA;&amp;#xD;"</code> for CR-LF.
+    /// </summary>
+    public static string SettingsLineEnding {
+        get { return settings.GetString(PREFERENCE_SETTINGS_LINE_ENDING,
+                                      defaultValue: ""); }
+        set {
+            settings.GetString(PREFERENCE_SETTINGS_LINE_ENDING, value);
+        }
     }
 
     /// <summary>
